@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReactiveTest"
         mc:Ignorable="d"
-        Title="DialogWindow" Height="300" Width="300">
+        Title="DialogWindow" Height="500" Width="300">
     <StackPanel Orientation="Vertical">
         <Label Content="Select a number:" />
         <ListBox SelectedItem="{Binding SelectedNumber}" ItemsSource="{Binding Numbers}" />
+        <Label Content="Current selection:" />
+        <Label Content="{Binding SelectedNumber}" FontWeight="Bold" />
         <Button Command="{Binding Close}" Content="OK" />
     </StackPanel>
 </Window>
