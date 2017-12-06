@@ -17,7 +17,7 @@ namespace ReactiveTest
 
         public Interaction<Unit, int> GetNumberFromDialog { get; protected set; }
 
-        protected int _myNumber;
+        protected int _myNumber = -5000;
         public int MyNumber
         {
             get { return _myNumber; }
@@ -38,8 +38,12 @@ namespace ReactiveTest
                 view.ViewModel = vm;
 
                 var window = view as Window;
-
-                if (true == window.ShowDialog())
+                var dialogResult = window.ShowDialog();
+                
+                // At this point, vm.SelectedNumber is expected be the number the user selected -
+                // but instead, it always evaluates to 0.
+                
+                if (true == dialogResult)
                     interaction.SetOutput(vm.SelectedNumber);
                 else
                     interaction.SetOutput(-1);
@@ -48,7 +52,7 @@ namespace ReactiveTest
             OpenDialog = ReactiveCommand.Create(() =>
             {
                 GetNumberFromDialog.Handle(Unit.Default)
-                    .Where(retVal => -1 != retVal)
+                    .Where(retVal => -1 != retVal) // If the dialog did not return true, don't update
                     .Subscribe(retVal =>
                     {
                         this.MyNumber = retVal;
@@ -58,7 +62,7 @@ namespace ReactiveTest
 
         public static void Bootstrap()
         {
-            Locator.CurrentMutable.RegisterLazySingleton(() => new DialogWindow(), typeof(IViewFor<DialogWindowViewModel>));
+            Locator.CurrentMutable.Register(() => new DialogWindow(), typeof(IViewFor<DialogWindowViewModel>));
         }
     }
 }
